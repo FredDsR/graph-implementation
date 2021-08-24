@@ -1,26 +1,34 @@
-from classes import Nodo, Aresta
+from classes import Grafo
 
+grafo = Grafo()
 op = -1
-matriz_adjacencia = []
-
-# TODO utilizar classe Grafo para manipulações
-
-def addNodo():
-    rotulo = input('Digite o rótulo do novo nodo:')
-
-    novo_nodo = Nodo(rotulo)
-
-    if len(matriz_adjacencia) > 0:
-        nodo
-
 
 while op != 0:
     print('-----------  Menu:  -----------')
-    print('1 - Adicionar um nodo;')
-    print('2 - Deletar um nodo;')
-    print('3 - Imprimir matriz de adjacência;')
-    print('0 - Sair')
+    print('1 - Adicionar um vértice;')
+    print('2 - Deletar um vértice;')
+    print('3 - Adicionar uma aresta;')
+    print('4 - Remover uma aresta;')
+    print('0 - Sair.')
     op = input('Digite uma das opções acima:')
 
     if op == 1:
-        addNodo()
+        rotulo = input('Digite o rótulo do vértice:')
+        grafo.set_vertice(rotulo)
+    elif op == 2:
+        rotulo = input('Digite o rótulo do vértice:')
+        grafo.delete_vertice(rotulo)
+    elif op == 3:
+        rotulo_dir = input('Digite o rótulo do primeiro vértice:')
+        rotulo_esq = input('Digite o rótulo do segundo vértice:')
+        rotulo_aresta = input('Digite o rótulo do vértice:')
+        peso_aresta = float(input('Digite o peso do vértice (float):'))
+        grafo.set_aresta(rotulo_dir, rotulo_esq, rotulo_aresta, peso_aresta)
+    elif op == 4:
+        rotulo_dir = input('Digite o rótulo do primeiro vértice:')
+        rotulo_esq = input('Digite o rótulo do segundo vértice:')
+        grafo.delete_aresta(rotulo_dir, rotulo_esq)
+    elif op == 0:
+        print('Saindo...')
+    else:
+        print('Digite uma opção válida!')
