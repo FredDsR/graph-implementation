@@ -1,17 +1,10 @@
-from . import Vertice
-
 
 class Aresta:
-    def __init__(self, vertice_direito: Vertice,
-                 vertice_esquerdo: Vertice, rotulo: str,
-                 peso: float) -> None:
-        self.vertice_direito = vertice_direito
-        self.vertice_esquerdo = vertice_esquerdo
-        self.rotulo = rotulo
+    def __init__(self, rotulo_vertice_direito: str,
+                 rotulo_vertice_esquerdo: str, peso: float) -> None:
+        self.rotulo_vertice_direito = rotulo_vertice_direito
+        self.rotulo_vertice_esquerdo = rotulo_vertice_esquerdo
         self.peso = peso
-
-        self.vertice_direito.set_aresta(self)
-        self.vertice_esquerdo.set_aresta(self)
 
     def get_peso(self) -> float:
         return self.peso
@@ -19,7 +12,8 @@ class Aresta:
     def set_peso(self, peso: float) -> None:
         self.peso = peso
 
-    def delete_aresta(self) -> None:
-        self.vertice_direito.remove_aresta(self)
-        self.vertice_esquerdo.remove_aresta(self)
-        del self
+    def get_vertice_direito(self) -> str:
+        return self.rotulo_vertice_direito
+
+    def get_vertice_esquerdo(self) -> str:
+        return self.rotulo_vertice_esquerdo

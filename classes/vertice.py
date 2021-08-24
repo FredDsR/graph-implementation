@@ -1,4 +1,4 @@
-from classes.aresta import Aresta
+from .aresta import Aresta
 
 
 class Vertice:
@@ -13,9 +13,12 @@ class Vertice:
         self.arestas = [aresta if aresta is not aresta_to_remove
                         else aresta for aresta in self.arestas]
 
-    def delete_all_arestas(self) -> None:
+    def reset_arestas(self) -> None:
         for aresta in self.arestas:
             self.delete_aresta(aresta)
 
     def get_arestas(self) -> list:
         return self.arestas
+
+    def get_rotulo(self) -> str:
+        return self.rotulo
