@@ -50,5 +50,5 @@ class Grafo:
 
     def delete_aresta(self, rotulo_vertice_dir: str,
                       rotulo_vertice_esq: str) -> None:
-
-        self.
+        # TODO Implementar função delete_aresta
+        pass
