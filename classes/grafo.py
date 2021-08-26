@@ -7,36 +7,42 @@ class Grafo:
         self.vertices = {}
         self.arestas = []
 
-    def set_vertice(self, rotulo: str, replace: bool = False) -> None:
+    def set_vertice(self, rotulo: str) -> None:
 
         if len(self.vertices) == self.limite_de_vertices:
-            raise Exception(f'Limite de {self.limite_de_vertices} '
-                            'vertices atingido.')
+            print(f'Limite de {self.limite_de_vertices} '
+                  'vertices atingido.')
+            return
 
-        if self.existe_vertice(rotulo) and not replace:
-            raise Exception(f'Error: Vertice {rotulo} já existe.')
+        if self.existe_vertice(rotulo, show_message=False):
+            print(f'Vertice {rotulo} já existe.')
+            return
 
         self.vertices[rotulo] = Vertice(rotulo)
+        print(f'Vértice {rotulo} criado com sucesso!')
 
     def get_vertice(self, rotulo) -> Vertice:
-        if self.existe_vertice(rotulo, raise_error=True):
+        if self.existe_vertice(rotulo):
             return self.vertices[rotulo]
         else:
             None
 
     def delete_vertice(self, rotulo: str) -> None:
-        if self.existe_vertice(rotulo):
-            vertice = self.vertices.pop(rotulo)
-            vertice.reset_arestas()
+        # ALERTA DE GAMBIARRA
+        vertice = self.get_vertice(rotulo)
+        if vertice:
+            arestas = vertice.get_arestas()
+            for i in range(len(arestas)):
+                self.delete_aresta(arestas[0].get_vertice_direito(),
+                                   arestas[0].get_vertice_esquerdo())
+            self.vertices.pop(rotulo)
             del vertice
 
-    def existe_vertice(self, rotulo: str, raise_error: bool = False) -> bool:
+    def existe_vertice(self, rotulo: str, show_message: bool = True) -> bool:
         if rotulo not in self.vertices:
-            if raise_error:
-                raise Exception(f'Error: Vertice {rotulo} '
-                                'não encontrado.')
-            else:
-                return False
+            if show_message:
+                print(f'Vertice {rotulo} não existe!')
+            return False
         else:
             return True
 
@@ -46,56 +52,69 @@ class Grafo:
         vertice_dir = self.get_vertice(rotulo_vertice_dir)
         vertice_esq = self.get_vertice(rotulo_vertice_esq)
 
-        new_aresta = Aresta(rotulo_vertice_dir,
-                            rotulo_vertice_esq,
-                            peso)
+        if vertice_esq and vertice_dir:
+            new_aresta = Aresta(rotulo_vertice_dir,
+                                rotulo_vertice_esq,
+                                peso)
 
-        vertice_dir.set_aresta(new_aresta)
-        vertice_esq.set_aresta(new_aresta)
+            vertice_dir.set_aresta(new_aresta)
+            vertice_esq.set_aresta(new_aresta)
 
-        self.arestas.append(new_aresta)
+            self.arestas.append(new_aresta)
 
     def get_aresta(self, rotulo_vertice_dir: str,
                    rotulo_vertice_esq: str) -> Aresta:
-        vertice_dir = self.get_vertice(rotulo_vertice_dir)
-        vertice_esq = self.get_vertice(rotulo_vertice_esq)
 
-        for varesta in self.arestas:
-            vertice_dir_aresta = varesta.get_vertice_direito()
-            vertice_esq_aresta = varesta.get_vertice_esquerdo()
+        if (self.existe_vertice(rotulo_vertice_dir)
+                and self.existe_vertice(rotulo_vertice_esq)):
 
-            if (vertice_dir is vertice_dir_aresta
-                and vertice_esq is vertice_esq_aresta) \
-                or (vertice_esq is vertice_dir_aresta
-                    and vertice_dir is vertice_esq_aresta):
-                return varesta
+            for aresta in self.arestas:
+
+                rotulo_dir_aresta = aresta.get_vertice_direito()
+                rotulo_esq_aresta = aresta.get_vertice_esquerdo()
+
+                if (rotulo_vertice_dir == rotulo_dir_aresta
+                    and rotulo_vertice_esq == rotulo_esq_aresta) \
+                    or (rotulo_vertice_esq == rotulo_dir_aresta
+                        and rotulo_vertice_dir == rotulo_esq_aresta):
+                    return aresta
         return None
 
     def delete_aresta(self, rotulo_vertice_dir: str,
                       rotulo_vertice_esq: str) -> None:
 
-        # TODO ta rolando alguma merda aqui, não ta deletado
-
         aresta_to_remove = self.get_aresta(rotulo_vertice_dir,
                                            rotulo_vertice_esq)
+
+        print('Aresta to remove:', aresta_to_remove)
+        if not aresta_to_remove:
+            print(f'Não existe aresta entre {rotulo_vertice_dir} '
+                  f'e {rotulo_vertice_esq}.')
+            return
+
         vertice_dir = self.get_vertice(rotulo_vertice_dir)
         vertice_esq = self.get_vertice(rotulo_vertice_esq)
 
         vertice_dir.delete_aresta(aresta_to_remove)
         vertice_esq.delete_aresta(aresta_to_remove)
 
-        self.arestas = [aresta if aresta is not aresta_to_remove
-                        else aresta for aresta in self.arestas]
+        self.arestas.remove(aresta_to_remove)
+
+        print(f'Aresta entra {rotulo_vertice_dir} '
+              f'e {rotulo_vertice_esq} removida com sucesso!')
 
         del aresta_to_remove
 
     def print_vertices(self) -> None:
         vertices = '; '.join(self.vertices.keys())
         print(f'Vértices disponíveis: {vertices};')
-        print('')
 
     def print_grafo(self) -> None:
-        print('Grafo:')
+        if len(self.vertices) == 0:
+            print('Não existem vértices no grafo.')
+            return
+
+        print('----- Grafo: -----')
         for vertice in self.vertices:
             pesos = []
             rotulos = []

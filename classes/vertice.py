@@ -10,12 +10,8 @@ class Vertice:
         self.arestas.append(aresta)
 
     def delete_aresta(self, aresta_to_remove: Aresta) -> None:
-        self.arestas = [aresta if aresta is not aresta_to_remove
-                        else aresta for aresta in self.arestas]
 
-    def reset_arestas(self) -> None:
-        for aresta in self.arestas:
-            self.delete_aresta(aresta)
+        self.arestas.remove(aresta_to_remove)
 
     def get_arestas(self) -> list:
         return self.arestas

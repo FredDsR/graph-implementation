@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [scripts]
-main = "python main.py"
+run = "python main.py"
 
 [packages]
 flake8 = "*"
