@@ -1,3 +1,5 @@
+import sys
+
 from . import Vertice, Aresta
 
 
@@ -142,3 +144,53 @@ class Grafo:
         self.set_aresta('Poa', 'Bage', 78.3)
         self.set_aresta('Chui', 'Bage', 55.2)
         self.set_aresta('Bage', 'Pel', 15.5)
+
+    def menor_caminho_dijikstra(self, vertice_inicial: Vertice,
+                                vertice_final: Vertice):
+
+        rotulos = list(self.vertices.keys())
+        aberto = [True] * len(rotulos)
+        antecessor = [''] * len(rotulos)
+        pesos = [sys.maxsize] * len(rotulos)
+
+        idx_atual = rotulos.index(vertice_inicial.get_rotulo())
+        pesos[idx_atual] = 0
+
+        vertice_atual = vertice_inicial
+
+        while True in aberto:
+            arestas = vertice_atual.get_arestas()
+
+            menor_caminho = sys.maxsize
+
+            rotulo_mais_perto = ''
+
+            for aresta in arestas:
+                v_dir = aresta.get_vertice_direito()
+                v_esq = aresta.get_vertice_esquerdo()
+
+                rotulo_vizinho = v_dir if v_dir != vertice_atual else v_esq
+                idx_vizinho = rotulos.index(rotulo_vizinho)
+
+                if not aberto[idx_vizinho]:
+                    continue
+
+                peso = aresta.get_peso() + pesos[idx_atual]
+
+                pesos[idx_vizinho] = peso
+                antecessor[idx_vizinho] = rotulos[idx_atual]
+                aberto[idx_vizinho] = False
+
+                if peso < menor_caminho:
+                    menor_caminho = peso
+                    rotulo_mais_perto = rotulo_vizinho
+
+            # TODO ta dando uma ruim aqui no rotulo mais perto
+
+            vertice_atual = self.get_vertice(rotulo_mais_perto)
+            idx_atual = rotulos.index(rotulo_mais_perto)
+
+        print(rotulos)
+        print(aberto)
+        print(peso)
+        print(antecessor)

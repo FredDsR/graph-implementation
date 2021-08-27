@@ -62,3 +62,12 @@ while op != 0:
         # Entrada inválida
         print('')
         print('Digite uma opção válida!')
+
+
+# TODO tirar isso aqui quando terminar a implementação
+if __name__ == '__main__':
+    grafo = Grafo()
+    grafo.criar_grafo_teste()
+    vertice1 = grafo.get_vertice('Poa')
+    vertice2 = grafo.get_vertice('Pel')
+    grafo.menor_caminho_dijikstra(vertice1, vertice2)
