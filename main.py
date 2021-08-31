@@ -15,6 +15,7 @@ while op != 0:
     print('-------------------------------')
     print('(6) - Ver grafo (lista encadeada);')
     print('(7) - Gerar grafo de teste;')
+    print('(8) - Buscar menor caminho (dijikstra);')
     print('-------------------------------')
     print('(0) - Sair.')
     op = int(input('Digite uma das opções acima: '))
@@ -54,6 +55,15 @@ while op != 0:
         # Gera grafo para teste
         print('')
         grafo.criar_grafo_teste()
+    elif op == 8:
+        # Busca menor caminho
+        rotulo_inicial = input('Digite o rótulo do vértice inicial: ')
+        rotulo_final = input('Digite o rótulo do vértice final: ')
+        print('')
+        vertice_inicial = grafo.get_vertice(rotulo_inicial)
+        vertice_final = grafo.get_vertice(rotulo_final)
+        print(f'Menor caminho entre {rotulo_inicial} e {rotulo_final}:',
+              grafo.menor_caminho_dijikstra(vertice_inicial, vertice_final))
     elif op == 0:
         # Sai do programa
         print('')
@@ -62,12 +72,3 @@ while op != 0:
         # Entrada inválida
         print('')
         print('Digite uma opção válida!')
-
-
-# TODO tirar isso aqui quando terminar a implementação
-if __name__ == '__main__':
-    grafo = Grafo()
-    grafo.criar_grafo_teste()
-    vertice1 = grafo.get_vertice('Poa')
-    vertice2 = grafo.get_vertice('Pel')
-    grafo.menor_caminho_dijikstra(vertice1, vertice2)

@@ -134,42 +134,52 @@ class Grafo:
             print(f'{rotulo_vertice} {labels}')
 
     def criar_grafo_teste(self) -> None:
-        self.set_vertice('Pel')
-        self.set_vertice('Poa')
-        self.set_vertice('Bage')
-        self.set_vertice('Chui')
+        self.set_vertice('A')
+        self.set_vertice('B')
+        self.set_vertice('C')
+        self.set_vertice('D')
+        self.set_vertice('E')
+        self.set_vertice('F')
 
-        self.set_aresta('Pel', 'Poa', 150.8)
-        self.set_aresta('Pel', 'Chui', 40.7)
-        self.set_aresta('Poa', 'Bage', 78.3)
-        self.set_aresta('Chui', 'Bage', 55.2)
-        self.set_aresta('Bage', 'Pel', 15.5)
+        self.set_aresta('A', 'B', 10)
+        self.set_aresta('A', 'D', 5)
+        self.set_aresta('B', 'D', 3)
+        self.set_aresta('B', 'C', 1)
+        self.set_aresta('C', 'D', 8)
+        self.set_aresta('C', 'E', 4)
+        self.set_aresta('C', 'F', 4)
+        self.set_aresta('D', 'E', 2)
+        self.set_aresta('E', 'F', 6)
 
     def menor_caminho_dijikstra(self, vertice_inicial: Vertice,
-                                vertice_final: Vertice):
+                                vertice_final: Vertice) -> str:
+
+        if not vertice_inicial or not vertice_final:
+            return None
 
         rotulos = list(self.vertices.keys())
         aberto = [True] * len(rotulos)
-        antecessor = [''] * len(rotulos)
+        antecessores = [''] * len(rotulos)
         pesos = [sys.maxsize] * len(rotulos)
 
         idx_atual = rotulos.index(vertice_inicial.get_rotulo())
         pesos[idx_atual] = 0
+        aberto[idx_atual] = False
 
         vertice_atual = vertice_inicial
 
-        while True in aberto:
+        while any(aberto):
             arestas = vertice_atual.get_arestas()
 
-            menor_caminho = sys.maxsize
-
             rotulo_mais_perto = ''
+            menor_caminho = sys.maxsize
 
             for aresta in arestas:
                 v_dir = aresta.get_vertice_direito()
                 v_esq = aresta.get_vertice_esquerdo()
 
-                rotulo_vizinho = v_dir if v_dir != vertice_atual else v_esq
+                rotulo_vizinho = v_dir if v_dir != vertice_atual.get_rotulo() \
+                    else v_esq
                 idx_vizinho = rotulos.index(rotulo_vizinho)
 
                 if not aberto[idx_vizinho]:
@@ -177,20 +187,30 @@ class Grafo:
 
                 peso = aresta.get_peso() + pesos[idx_atual]
 
-                pesos[idx_vizinho] = peso
-                antecessor[idx_vizinho] = rotulos[idx_atual]
-                aberto[idx_vizinho] = False
+                if pesos[idx_vizinho] > peso:
+
+                    pesos[idx_vizinho] = peso
+                    antecessores[idx_vizinho] = rotulos[idx_atual]
+
+                    aberto[idx_vizinho] = False
+                else:
+                    peso = pesos[idx_vizinho]
 
                 if peso < menor_caminho:
                     menor_caminho = peso
                     rotulo_mais_perto = rotulo_vizinho
 
-            # TODO ta dando uma ruim aqui no rotulo mais perto
-
             vertice_atual = self.get_vertice(rotulo_mais_perto)
             idx_atual = rotulos.index(rotulo_mais_perto)
 
-        print(rotulos)
-        print(aberto)
-        print(peso)
-        print(antecessor)
+        caminho = f'--> {vertice_final.get_rotulo()}'
+        idx_atual = rotulos.index(vertice_final.get_rotulo())
+        antecessor = antecessores[idx_atual]
+        while antecessor != vertice_inicial.get_rotulo():
+            caminho = f'--> {antecessor} --{pesos[idx_atual]}' + caminho
+            idx_atual = rotulos.index(antecessor)
+            antecessor = antecessores[idx_atual]
+
+        caminho = antecessor + ' --' + str(pesos[idx_atual]) + caminho
+
+        return caminho
