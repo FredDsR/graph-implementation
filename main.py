@@ -1,9 +1,9 @@
 from classes import Grafo
 
 grafo = Grafo()
-op = -1
+op = ''
 
-while op != 0:
+while op != '0':
     print('')
     print('-----------  Menu:  -----------')
     print('(1) - Adicionar um vértice;')
@@ -18,53 +18,55 @@ while op != 0:
     print('(8) - Buscar menor caminho (dijikstra);')
     print('-------------------------------')
     print('(0) - Sair.')
-    op = int(input('Digite uma das opções acima: '))
+    op = input('Digite uma das opções acima: ')
 
-    if op == 1:
+    if op == '1':
         # Adiciona vértice
         rotulo = input('Digite o rótulo do vértice: ')
         print('')
         grafo.set_vertice(rotulo)
-    elif op == 2:
+    elif op == '2':
         # Remove vértice
         rotulo = input('Digite o rótulo do vértice: ')
         print('')
         grafo.delete_vertice(rotulo)
-    elif op == 3:
+    elif op == '3':
         # Imprime vértices disponíveis
         grafo.print_vertices()
         print('')
-    elif op == 4:
+    elif op == '4':
         # Adiciona aresta
         rotulo_dir = input('Digite o rótulo do primeiro vértice: ')
         rotulo_esq = input('Digite o rótulo do segundo vértice: ')
         peso_aresta = float(input('Digite o peso da aresta (float): '))
         print('')
         grafo.set_aresta(rotulo_dir, rotulo_esq, peso_aresta)
-    elif op == 5:
+    elif op == '5':
         # Remove aresta
         rotulo_dir = input('Digite o rótulo do primeiro vértice: ')
         rotulo_esq = input('Digite o rótulo do segundo vértice: ')
         print('')
         grafo.delete_aresta(rotulo_dir, rotulo_esq)
-    elif op == 6:
+    elif op == '6':
         # Imprime grafo na tela
         print('')
         grafo.print_grafo()
-    elif op == 7:
+    elif op == '7':
         # Gera grafo para teste
         print('')
         grafo.criar_grafo_teste()
-    elif op == 8:
+    elif op == '8':
         # Busca menor caminho
         rotulo_inicial = input('Digite o rótulo do vértice inicial: ')
         rotulo_final = input('Digite o rótulo do vértice final: ')
         print('')
         vertice_inicial = grafo.get_vertice(rotulo_inicial)
         vertice_final = grafo.get_vertice(rotulo_final)
-        print(f'Menor caminho entre {rotulo_inicial} e {rotulo_final}:',
-              grafo.menor_caminho_dijikstra(vertice_inicial, vertice_final))
-    elif op == 0:
+        menor_caminho = grafo.menor_caminho_dijikstra(vertice_inicial,
+                                                      vertice_final)
+        if menor_caminho:
+            grafo.print_caminho(menor_caminho)
+    elif op == '0':
         # Sai do programa
         print('')
         print('Saindo...')

@@ -1,6 +1,7 @@
 import sys
 
 from . import Vertice, Aresta
+from typing import List, Tuple
 
 
 class Grafo:
@@ -141,18 +142,28 @@ class Grafo:
         self.set_vertice('E')
         self.set_vertice('F')
 
-        self.set_aresta('A', 'B', 10)
-        self.set_aresta('A', 'D', 5)
-        self.set_aresta('B', 'D', 3)
-        self.set_aresta('B', 'C', 1)
-        self.set_aresta('C', 'D', 8)
-        self.set_aresta('C', 'E', 4)
-        self.set_aresta('C', 'F', 4)
-        self.set_aresta('D', 'E', 2)
-        self.set_aresta('E', 'F', 6)
+        self.set_aresta('A', 'B', 10.0)
+        self.set_aresta('A', 'D', 5.0)
+        self.set_aresta('B', 'D', 3.0)
+        self.set_aresta('B', 'C', 1.0)
+        self.set_aresta('C', 'D', 8.0)
+        self.set_aresta('C', 'E', 4.0)
+        self.set_aresta('C', 'F', 4.0)
+        self.set_aresta('D', 'E', 2.0)
+        self.set_aresta('E', 'F', 6.0)
 
-    def menor_caminho_dijikstra(self, vertice_inicial: Vertice,
-                                vertice_final: Vertice) -> str:
+    def get_rotulo_vizinho(self, rotulo_vertice: str, aresta: Aresta) -> str:
+        v_dir = aresta.get_vertice_direito()
+        v_esq = aresta.get_vertice_esquerdo()
+
+        rotulo_vizinho = v_dir if v_dir != rotulo_vertice else v_esq
+
+        return rotulo_vizinho
+
+    def menor_caminho_dijikstra(self,
+                                vertice_inicial: Vertice,
+                                vertice_final: Vertice) \
+            -> List[Tuple[str, float]]:
 
         if not vertice_inicial or not vertice_final:
             return None
@@ -171,46 +182,62 @@ class Grafo:
         while any(aberto):
             arestas = vertice_atual.get_arestas()
 
-            rotulo_mais_perto = ''
+            rotulo_mais_perto = None
             menor_caminho = sys.maxsize
-
             for aresta in arestas:
-                v_dir = aresta.get_vertice_direito()
-                v_esq = aresta.get_vertice_esquerdo()
 
-                rotulo_vizinho = v_dir if v_dir != vertice_atual.get_rotulo() \
-                    else v_esq
+                rotulo_vizinho = self.get_rotulo_vizinho(
+                    vertice_atual.get_rotulo(), aresta
+                )
+
                 idx_vizinho = rotulos.index(rotulo_vizinho)
 
                 if not aberto[idx_vizinho]:
                     continue
 
-                peso = aresta.get_peso() + pesos[idx_atual]
+                novo_peso_vizinho = aresta.get_peso() + pesos[idx_atual]
 
-                if pesos[idx_vizinho] > peso:
+                if pesos[idx_vizinho] > novo_peso_vizinho:
 
-                    pesos[idx_vizinho] = peso
+                    pesos[idx_vizinho] = novo_peso_vizinho
                     antecessores[idx_vizinho] = rotulos[idx_atual]
 
                     aberto[idx_vizinho] = False
                 else:
-                    peso = pesos[idx_vizinho]
+                    novo_peso_vizinho = pesos[idx_vizinho]
 
-                if peso < menor_caminho:
-                    menor_caminho = peso
+                if novo_peso_vizinho < menor_caminho:
+                    menor_caminho = novo_peso_vizinho
                     rotulo_mais_perto = rotulo_vizinho
+
+            if not rotulo_mais_perto:
+                print(f'Não existe caminho entre '
+                      f'{vertice_inicial.get_rotulo()} e '
+                      f'{vertice_final.get_rotulo()}.')
+                return None
 
             vertice_atual = self.get_vertice(rotulo_mais_perto)
             idx_atual = rotulos.index(rotulo_mais_perto)
 
-        caminho = f'--> {vertice_final.get_rotulo()}'
         idx_atual = rotulos.index(vertice_final.get_rotulo())
+        caminho = [(vertice_final.get_rotulo(), pesos[idx_atual])]
         antecessor = antecessores[idx_atual]
         while antecessor != vertice_inicial.get_rotulo():
-            caminho = f'--> {antecessor} --{pesos[idx_atual]}' + caminho
             idx_atual = rotulos.index(antecessor)
+            caminho.append((antecessor, pesos[idx_atual]))
             antecessor = antecessores[idx_atual]
 
-        caminho = antecessor + ' --' + str(pesos[idx_atual]) + caminho
+        idx_atual = rotulos.index(antecessor)
+        caminho.append((antecessor, pesos[idx_atual]))
 
+        caminho.reverse()
         return caminho
+
+    def print_caminho(self, caminho: List[Tuple[str, float]]):
+
+        string = ' --> '.join(
+            [f'({passo[0]}, d={passo[1]})' for passo in caminho]
+        )
+        print(f'Caminho entre {caminho[0][0]} e {caminho[-1][0]}')
+        print(string)
+        print('c.c: d = distância percorrida.')
