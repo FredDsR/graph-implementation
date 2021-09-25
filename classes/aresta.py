@@ -17,3 +17,12 @@ class Aresta:
 
     def get_vertice_esquerdo(self) -> str:
         return self.rotulo_vertice_esquerdo
+
+    def get_vertices(self) -> tuple:
+        return (self.get_vertice_direito(),
+                self.get_vertice_esquerdo())
+
+    def print_aresta(self) -> None:
+        print(f'{self.rotulo_vertice_direito} -- '
+              f'{self.peso} -- '
+              f'{self.rotulo_vertice_esquerdo}')

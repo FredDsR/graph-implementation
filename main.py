@@ -6,18 +6,21 @@ op = ''
 while op != '0':
     print('')
     print('-----------  Menu:  -----------')
-    print('(1) - Adicionar um vértice;')
-    print('(2) - Remover um vértice;')
-    print('(3) - Ver vértices disponíveis;')
+    print('(1)  - Adicionar um vértice;')
+    print('(2)  - Remover um vértice;')
+    print('(3)  - Ver vértices disponíveis;')
     print('-------------------------------')
-    print('(4) - Adicionar uma aresta;')
-    print('(5) - Remover uma aresta;')
+    print('(4)  - Adicionar uma aresta;')
+    print('(5)  - Remover uma aresta;')
     print('-------------------------------')
-    print('(6) - Ver grafo (lista encadeada);')
-    print('(7) - Gerar grafo de teste;')
-    print('(8) - Buscar menor caminho (dijikstra);')
+    print('(6)  - Ver grafo (lista encadeada);')
+    print('(7)  - Gerar grafo de teste;')
     print('-------------------------------')
-    print('(0) - Sair.')
+    print('(8)  - Buscar menor caminho (Dijikstra);')
+    print('(9)  - Gerar árvore mínima - inplace (Kruskal);')
+    print('(10) - Gerar árvore máxima - inplace (Kruskal);')
+    print('-------------------------------')
+    print('(0)  - Sair.')
     op = input('Digite uma das opções acima: ')
 
     if op == '1':
@@ -47,6 +50,8 @@ while op != '0':
         rotulo_esq = input('Digite o rótulo do segundo vértice: ')
         print('')
         grafo.delete_aresta(rotulo_dir, rotulo_esq)
+        print(f'Aresta entre {rotulo_dir} '
+              f'e {rotulo_esq} removida com sucesso!')
     elif op == '6':
         # Imprime grafo na tela
         print('')
@@ -66,6 +71,18 @@ while op != '0':
                                                       vertice_final)
         if menor_caminho:
             grafo.print_caminho(menor_caminho)
+    elif op == '9':
+        # Gera árvore mínima
+        print('')
+        print('Árvore mínima:')
+        grafo.gera_árvore_kruskal()
+        grafo.print_grafo()
+    elif op == '10':
+        # Gera árvore máxima
+        print('')
+        print('Árvore máxima:')
+        grafo.gera_árvore_kruskal(maxima=True)
+        grafo.print_grafo()
     elif op == '0':
         # Sai do programa
         print('')

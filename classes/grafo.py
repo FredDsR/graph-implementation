@@ -5,7 +5,7 @@ from typing import List, Tuple
 
 
 class Grafo:
-    def __init__(self) -> None:
+    def __init__(self):
         self.limite_de_vertices = 20
         self.vertices = {}
         self.arestas = []
@@ -89,7 +89,6 @@ class Grafo:
         aresta_to_remove = self.get_aresta(rotulo_vertice_dir,
                                            rotulo_vertice_esq)
 
-        print('Aresta to remove:', aresta_to_remove)
         if not aresta_to_remove:
             print(f'Não existe aresta entre {rotulo_vertice_dir} '
                   f'e {rotulo_vertice_esq}.')
@@ -102,9 +101,6 @@ class Grafo:
         vertice_esq.delete_aresta(aresta_to_remove)
 
         self.arestas.remove(aresta_to_remove)
-
-        print(f'Aresta entra {rotulo_vertice_dir} '
-              f'e {rotulo_vertice_esq} removida com sucesso!')
 
         del aresta_to_remove
 
@@ -241,3 +237,34 @@ class Grafo:
         print(f'Caminho entre {caminho[0][0]} e {caminho[-1][0]}')
         print(string)
         print('c.c: d = distância percorrida.')
+
+    def get_arestas_ordenadas(self, desc: bool = False) -> List[Aresta]:
+        arestas = self.arestas.copy()
+        arestas.sort(key=lambda aresta: aresta.get_peso(),
+                     reverse=desc)
+        return arestas
+
+    def get_arvore(self, floresta: List[set], rotulo: str) -> set:
+        for arvore in floresta:
+            if rotulo in arvore:
+                return arvore
+        return None
+
+    def gera_árvore_kruskal(self, maxima: bool = False):
+        arestas = self.get_arestas_ordenadas(desc=maxima)
+        floresta = [set([vertice]) for vertice in self.vertices]
+
+        while len(arestas) > 0:
+            aresta = arestas.pop(0)
+
+            vertices = aresta.get_vertices()
+
+            arvore_1 = self.get_arvore(floresta, vertices[0])
+            arvore_2 = self.get_arvore(floresta, vertices[1])
+
+            if arvore_1 == arvore_2:
+                self.delete_aresta(vertices[0], vertices[1])
+            else:
+                floresta.append(arvore_1 | arvore_2)
+                floresta.remove(arvore_1)
+                floresta.remove(arvore_2)
